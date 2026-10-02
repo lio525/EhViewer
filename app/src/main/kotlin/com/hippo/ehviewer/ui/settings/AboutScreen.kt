@@ -39,6 +39,7 @@ import com.hippo.ehviewer.updater.AppUpdater
 import com.hippo.ehviewer.updater.Release
 import com.hippo.ehviewer.util.AppConfig
 import com.hippo.ehviewer.util.ReadableTime
+import com.hippo.ehviewer.util.WebViewSupport
 import com.hippo.ehviewer.util.displayString
 import com.hippo.ehviewer.util.installPackage
 import com.ramcosta.composedestinations.annotation.Destination
@@ -59,6 +60,17 @@ private fun versionCode() = "${BuildConfig.VERSION_NAME} (${BuildConfig.COMMIT_S
 @Composable
 @Stable
 private fun author() = AnnotatedString.fromHtml(stringResource(R.string.settings_about_author_summary).replace('$', '@'))
+
+@Composable
+@Stable
+private fun webViewSummary(): String {
+    val detail = listOfNotNull(WebViewSupport.versionName, WebViewSupport.packageName).joinToString(" · ")
+    return if (detail.isNotEmpty() && WebViewSupport.canUseWebView) {
+        detail
+    } else {
+        stringResource(R.string.settings_about_webview_unavailable)
+    }
+}
 
 @Destination<RootGraph>
 @Composable
@@ -97,6 +109,10 @@ fun AnimatedVisibilityScope.AboutScreen(navigator: DestinationsNavigator) = Scre
             Preference(
                 title = stringResource(id = R.string.settings_about_version),
                 summary = versionCode(),
+            )
+            Preference(
+                title = stringResource(id = R.string.settings_about_webview),
+                summary = webViewSummary(),
             )
             SwitchPreference(
                 title = stringResource(id = R.string.backup_before_update),

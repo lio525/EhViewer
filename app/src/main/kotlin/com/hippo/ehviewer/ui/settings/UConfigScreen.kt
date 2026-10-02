@@ -23,7 +23,9 @@ import com.google.accompanist.web.rememberWebViewNavigator
 import com.google.accompanist.web.rememberWebViewState
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.ui.Screen
+import com.hippo.ehviewer.ui.WebViewUnavailable
 import com.hippo.ehviewer.ui.main.NavigationIcon
+import com.hippo.ehviewer.util.WebViewSupport
 import com.hippo.ehviewer.util.setDefaultSettings
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -43,32 +45,39 @@ fun AnimatedVisibilityScope.UConfigScreen(navigator: DestinationsNavigator) = Sc
                 title = { Text(text = stringResource(id = R.string.u_config)) },
                 navigationIcon = { NavigationIcon() },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            wvNavigator.loadUrl(APPLY_JS)
-                            navigator.popBackStack()
-                        },
-                        shapes = IconButtonDefaults.shapes(),
-                    ) {
-                        Icon(imageVector = Icons.Default.Check, contentDescription = null)
+                    if (WebViewSupport.canUseWebView) {
+                        IconButton(
+                            onClick = {
+                                wvNavigator.loadUrl(APPLY_JS)
+                                navigator.popBackStack()
+                            },
+                            shapes = IconButtonDefaults.shapes(),
+                        ) {
+                            Icon(imageVector = Icons.Default.Check, contentDescription = null)
+                        }
                     }
                 },
             )
         },
     ) { paddingValues ->
-        val state = rememberWebViewState(url = url)
-        WebView(
-            state = state,
-            modifier = Modifier.padding(paddingValues).fillMaxSize(),
-            navigator = wvNavigator,
-            onCreated = { it.setDefaultSettings() },
-        )
-        val applyTip = stringResource(id = R.string.apply_tip)
-        DisposableEffect(Unit) {
-            launch { snackbar(applyTip) }
-            onDispose {
-                EhCookieStore.flush()
+        if (WebViewSupport.canUseWebView) {
+            val state = rememberWebViewState(url = url)
+            WebView(
+                state = state,
+                modifier = Modifier.padding(paddingValues).fillMaxSize(),
+                navigator = wvNavigator,
+                onCreated = { it.setDefaultSettings() },
+            )
+            val applyTip = stringResource(id = R.string.apply_tip)
+            DisposableEffect(Unit) {
+                launch { snackbar(applyTip) }
+                onDispose {
+                    EhCookieStore.flush()
+                }
             }
+        } else {
+            // 没有可用的系统 WebView，不初始化任何 WebView API，退回外部浏览器
+            WebViewUnavailable(url = url, modifier = Modifier.padding(paddingValues))
         }
     }
 }

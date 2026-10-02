@@ -27,6 +27,11 @@
     <string name="sign_in">登录</string>
     <string name="register">注册</string>
     <string name="sign_in_via_webview">通过网页登录</string>
+    <string name="webview_unavailable_title">系统 WebView 不可用</string>
+    <string name="webview_unavailable_message">登录、Cloudflare 验证和部分设置页依赖设备提供的系统 WebView（Android System WebView 或 Chrome）。当前未检测到可用的 WebView，这些页面已停用。请在系统设置中安装或启用其中一个后重启 EHViewer，也可以用下面的按钮通过外部浏览器打开该页面。</string>
+    <string name="webview_unavailable_open_in_browser">用浏览器打开</string>
+    <string name="settings_about_webview">系统 WebView</string>
+    <string name="settings_about_webview_unavailable">未检测到，相关页面已停用</string>
     <string name="sign_in_first">请先登录</string>
     <string name="text_is_empty">文本为空</string>
     <string name="waring">警告</string>

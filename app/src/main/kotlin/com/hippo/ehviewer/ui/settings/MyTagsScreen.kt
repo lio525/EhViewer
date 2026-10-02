@@ -14,7 +14,9 @@ import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.ui.Screen
+import com.hippo.ehviewer.ui.WebViewUnavailable
 import com.hippo.ehviewer.ui.main.NavigationIcon
+import com.hippo.ehviewer.util.WebViewSupport
 import com.hippo.ehviewer.util.setDefaultSettings
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -32,11 +34,16 @@ fun AnimatedVisibilityScope.MyTagsScreen(navigator: DestinationsNavigator) = Scr
             )
         },
     ) { paddingValues ->
-        val state = rememberWebViewState(url = url)
-        WebView(
-            state = state,
-            modifier = Modifier.padding(paddingValues).fillMaxSize(),
-            onCreated = { it.setDefaultSettings() },
-        )
+        if (WebViewSupport.canUseWebView) {
+            val state = rememberWebViewState(url = url)
+            WebView(
+                state = state,
+                modifier = Modifier.padding(paddingValues).fillMaxSize(),
+                onCreated = { it.setDefaultSettings() },
+            )
+        } else {
+            // 没有可用的系统 WebView，不初始化任何 WebView API，退回外部浏览器
+            WebViewUnavailable(url = url, modifier = Modifier.padding(paddingValues))
+        }
     }
 }
