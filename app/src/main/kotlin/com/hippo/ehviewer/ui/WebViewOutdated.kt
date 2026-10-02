@@ -18,6 +18,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ehviewer.core.i18n.R
 import com.hippo.ehviewer.util.WebViewSupport
+import android.content.Context
+import android.content.Intent
+import androidx.core.net.toUri
 
 /**
  * 系统 WebView 版本过旧时的提示条。
@@ -72,4 +75,10 @@ fun WebViewOutdatedNotice(modifier: Modifier = Modifier) {
         style = MaterialTheme.typography.bodySmall,
         modifier = modifier,
     )
+}
+
+private fun Context.openWebViewUpgrade() {
+    runCatching {
+        startActivity(Intent(Intent.ACTION_VIEW, WebViewSupport.playStoreUrl.toUri()))
+    }
 }

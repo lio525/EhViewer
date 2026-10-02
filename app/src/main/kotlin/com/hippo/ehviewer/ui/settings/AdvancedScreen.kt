@@ -72,6 +72,10 @@ import me.zhanghai.compose.preference.DropdownListPreference
 import moe.tarsin.coroutines.runSuspendCatching
 import moe.tarsin.snackbar
 import moe.tarsin.string
+import android.content.ClipboardManager
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
 
 context(ctx: Context)
 private fun dumplog(uri: Uri): Unit = with(ctx) {
@@ -274,18 +278,40 @@ fun AnimatedVisibilityScope.AdvancedScreen(navigator: DestinationsNavigator) = S
             val uaDefault = stringResource(id = R.string.settings_advanced_user_agent_default)
             val uaHint = stringResource(id = R.string.settings_advanced_user_agent_hint)
             val uaTitle = stringResource(id = R.string.settings_advanced_user_agent)
-            val currentUa by Settings.customUserAgent.collectAsState()
+                        val currentUa by Settings.customUserAgent.collectAsState()
+            var showUaDialog by remember { mutableStateOf(false) }
+            var uaInput by remember { mutableStateOf("") }
             Preference(
                 title = uaTitle,
                 summary = currentUa.ifEmpty { uaDefault },
             ) {
-                launch {
-                    Settings.customUserAgent.value = awaitInputText(
-                        initial = currentUa,
-                        title = uaTitle,
-                        hint = uaHint,
-                    )
-                }
+                uaInput = currentUa
+                showUaDialog = true
+            }
+            if (showUaDialog) {
+                AlertDialog(
+                    onDismissRequest = { showUaDialog = false },
+                    title = { Text(uaTitle) },
+                    text = {
+                        OutlinedTextField(
+                            value = uaInput,
+                            onValueChange = { uaInput = it },
+                            placeholder = { Text(uaHint) },
+                            singleLine = false,
+                        )
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            Settings.customUserAgent.value = uaInput
+                            showUaDialog = false
+                        }) { Text(stringResource(android.R.string.ok)) }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showUaDialog = false }) {
+                            Text(stringResource(android.R.string.cancel))
+                        }
+                    },
+                )
             }
             val importCookiesEmpty = stringResource(id = R.string.settings_advanced_import_cookies_empty)
             val importCookiesFailed = stringResource(id = R.string.settings_advanced_import_cookies_failed)
@@ -294,6 +320,7 @@ fun AnimatedVisibilityScope.AdvancedScreen(navigator: DestinationsNavigator) = S
                 title = stringResource(id = R.string.settings_advanced_import_cookies),
                 summary = stringResource(id = R.string.settings_advanced_import_cookies_summary),
             ) {
+                val clipboardManager = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val pasted = clipboardManager.primaryClip
                     ?.let { if (it.itemCount > 0) it.getItemAt(0).coerceToText(ctx).toString() else null }
                     .orEmpty()
