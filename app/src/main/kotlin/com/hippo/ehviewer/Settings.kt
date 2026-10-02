@@ -117,6 +117,12 @@ object Settings : DataStorePreferences(null) {
     val animateItems = boolPref("animate_items", true)
     val desktopSite = boolPref("desktop_site", true)
 
+    /**
+     * 自定义 User-Agent，留空表示跟随（已被钳制过的）WebView 版本号。
+     * 从浏览器导入 Cookie 时需要与导出时的 UA 完全一致，Cloudflare 的 `cf_clearance` 才会生效。
+     */
+    val customUserAgent = stringPref("custom_user_agent", "")
+
     // About
     val backupBeforeUpdate = boolPref("backup_before_update", false)
     val useCIUpdateChannel = boolPref("ci_update_channel", BuildConfig.SNAPSHOT)

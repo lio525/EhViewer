@@ -2,7 +2,7 @@ package com.hippo.ehviewer.util
 
 import android.annotation.SuppressLint
 import android.webkit.WebView
-import com.hippo.ehviewer.ktor.CHROME_MOBILE_USER_AGENT
+import com.hippo.ehviewer.ktor.effectiveUserAgent
 
 @SuppressLint("SetJavaScriptEnabled")
 fun WebView.setDefaultSettings() = with(settings) {
@@ -10,6 +10,7 @@ fun WebView.setDefaultSettings() = with(settings) {
     displayZoomControls = false
     javaScriptEnabled = true
 
-    // Always use mobile user-agent to bypass Cloudflare
-    userAgentString = CHROME_MOBILE_USER_AGENT
+    // 默认用移动端 UA 以绕过 Cloudflare；用户在高级设置里填了自定义 UA 时优先使用它，
+    // 这样在 WebView 里解出的 cf_clearance 才能和 HTTP 请求的 UA 对上。
+    userAgentString = effectiveUserAgent(desktop = false)
 }

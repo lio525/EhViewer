@@ -28,12 +28,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import com.ehviewer.core.files.delete
 import com.ehviewer.core.files.sendTo
 import com.ehviewer.core.files.toOkioPath
 import com.ehviewer.core.i18n.R
+import com.ehviewer.core.network.EhCookieStore
 import com.ehviewer.core.util.isAtLeastO
 import com.ehviewer.core.util.launch
 import com.ehviewer.core.util.logcat
@@ -264,6 +266,53 @@ fun AnimatedVisibilityScope.AdvancedScreen(navigator: DestinationsNavigator) = S
                         logcat(it)
                         launchSnackbar(importFailed)
                     }
+                }
+            }
+            // 设备 WebView 过旧、渲染不了 Cloudflare 验证页时的两条退路：
+            // 1) 在能正常验证的浏览器里导出 Cookie，粘贴进来；2) 让 UA 与导出时保持一致。
+            val ctx = LocalContext.current
+            val uaDefault = stringResource(id = R.string.settings_advanced_user_agent_default)
+            val uaHint = stringResource(id = R.string.settings_advanced_user_agent_hint)
+            val uaTitle = stringResource(id = R.string.settings_advanced_user_agent)
+            val currentUa by Settings.customUserAgent.collectAsState()
+            Preference(
+                title = uaTitle,
+                summary = currentUa.ifEmpty { uaDefault },
+            ) {
+                launch {
+                    Settings.customUserAgent.value = awaitInputText(
+                        initial = currentUa,
+                        title = uaTitle,
+                        hint = uaHint,
+                    )
+                }
+            }
+            val importCookiesEmpty = stringResource(id = R.string.settings_advanced_import_cookies_empty)
+            val importCookiesFailed = stringResource(id = R.string.settings_advanced_import_cookies_failed)
+            val importCookiesDone = stringResource(id = R.string.settings_advanced_import_cookies_done)
+            Preference(
+                title = stringResource(id = R.string.settings_advanced_import_cookies),
+                summary = stringResource(id = R.string.settings_advanced_import_cookies_summary),
+            ) {
+                val pasted = clipboardManager.primaryClip
+                    ?.let { if (it.itemCount > 0) it.getItemAt(0).coerceToText(ctx).toString() else null }
+                    .orEmpty()
+                if (pasted.isBlank()) {
+                    launchSnackbar(importCookiesEmpty)
+                } else {
+                    runCatching { EhCookieStore.importCookies(pasted) }
+                        .onSuccess { count ->
+                            if (count == 0) {
+                                launchSnackbar(importCookiesFailed)
+                            } else {
+                                Settings.hasSignedIn.value = EhCookieStore.hasSignedIn()
+                                launchSnackbar(importCookiesDone.format(count))
+                            }
+                        }
+                        .onFailure {
+                            logcat(it)
+                            launchSnackbar(importCookiesFailed)
+                        }
                 }
             }
             val hasSignedIn by Settings.hasSignedIn.collectAsState()

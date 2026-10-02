@@ -40,14 +40,24 @@ fun <T : HttpClientEngineConfig> HttpClientConfig<T>.configureCommon(redirect: B
 
 private val UserAgent = createClientPlugin("UserAgent") {
     onRequest { request, _ ->
-        val userAgent = if (Settings.desktopSite.value) {
-            CHROME_USER_AGENT
-        } else {
-            CHROME_MOBILE_USER_AGENT
-        }
-        request.userAgent(userAgent)
+        request.userAgent(effectiveUserAgent(Settings.desktopSite.value))
     }
 }
+
+/**
+ * 实际发给服务器的 User-Agent。
+ *
+ * 默认用（已被钳制过的）WebView 版本拼出来的字符串；如果用户在高级设置里填了自定义 UA，
+ * 则原样使用。[WebViewSupport.chromeMajorVersion] 保证默认值不会是一个过旧的 Chrome 版本，
+ * 避免被 Cloudflare 直接 challenge。
+ *
+ * 自定义 UA 的用途：Cloudflare 的 `cf_clearance` 与「解出验证时的 UA」绑定，
+ * 从浏览器导出 Cookie 导入本应用时，必须让这里的 UA 与导出浏览器一致，否则 clearance 不生效。
+ */
+fun effectiveUserAgent(desktop: Boolean): String =
+    Settings.customUserAgent.value.trim().ifEmpty {
+        if (desktop) CHROME_USER_AGENT else CHROME_MOBILE_USER_AGENT
+    }
 
 fun HttpTimeoutConfig.reset() = apply {
     requestTimeoutMillis = HttpTimeoutConfig.INFINITE_TIMEOUT_MS

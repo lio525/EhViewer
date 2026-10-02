@@ -376,6 +376,14 @@
     <string name="settings_advanced_export_data_failed">导出数据失败</string>
     <string name="settings_advanced_import_data">导入数据</string>
     <string name="settings_advanced_import_data_summary">从外置存储器导入数据</string>
+    <string name="settings_advanced_user_agent">自定义 User-Agent</string>
+    <string name="settings_advanced_user_agent_default">跟随系统 WebView 版本</string>
+    <string name="settings_advanced_user_agent_hint">留空则跟随系统 WebView 版本。导入 Cookie 时，请填成与导出该 Cookie 的浏览器完全一致的 User-Agent。</string>
+    <string name="settings_advanced_import_cookies">导入 Cookie</string>
+    <string name="settings_advanced_import_cookies_summary">先在能通过 Cloudflare 验证的浏览器里登录并复制 Cookie，然后点这里粘贴</string>
+    <string name="settings_advanced_import_cookies_done">已导入 %d 条 Cookie</string>
+    <string name="settings_advanced_import_cookies_empty">剪贴板为空</string>
+    <string name="settings_advanced_import_cookies_failed">没有识别到可用的 EH Cookie</string>
     <string name="settings_advanced_import_data_successfully">导入数据成功</string>
     <string name="settings_advanced_backup_favorite">备份收藏列表</string>
     <string name="settings_advanced_backup_favorite_summary">备份云端收藏列表到本地</string>

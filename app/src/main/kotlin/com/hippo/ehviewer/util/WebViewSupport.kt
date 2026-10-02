@@ -91,10 +91,26 @@ object WebViewSupport {
     val playStoreUrl: String
         get() = PLAY_STORE_URL_PREFIX + (packageName ?: "com.google.android.webview")
 
-    /** 供 User-Agent 使用的 Chrome 主版本号，检测不到 WebView 时退回 [FALLBACK_CHROME_VERSION]。 */
+    /**
+     * 供 User-Agent 使用的 Chrome 主版本号。
+     *
+     * 这个值会被拼进 HTTP 请求的 User-Agent（见 `com.hippo.ehviewer.ktor` 里的 `UserAgent` 插件）。
+     * 如果直接透传设备上过旧的 WebView 版本，UA 就会对外宣称一个很老的 Chrome，
+     * Cloudflare 会据此直接投递 challenge（`cf-mitigated: challenge`），
+     * 表现为「账号密码对了但就是过不去认证」。
+     *
+     * 所以这里做钳制：真实版本低于 [MIN_SUPPORTED_CHROME_MAJOR] 时不再透传，
+     * 一律退回 [FALLBACK_CHROME_VERSION]；检测不到或解析失败时同样退回。
+     *
+     * 注意：WebView 页面本身用的也是这个常量（见 `WebViewExtensions.kt`），
+     * 两边保持一致才能让 Cloudflare 的 `cf_clearance` 与 UA 绑定关系成立。
+     */
     val chromeMajorVersion: String
         get() = versionName
             ?.substringBefore('.')
             ?.takeIf { it.isNotEmpty() && it.all(Char::isDigit) }
+            ?.toInt()
+            ?.takeIf { it >= MIN_SUPPORTED_CHROME_MAJOR }
+            ?.toString()
             ?: FALLBACK_CHROME_VERSION
 }

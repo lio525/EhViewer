@@ -395,6 +395,14 @@
     <string name="settings_advanced_export_data_failed">Failed to export data</string>
     <string name="settings_advanced_import_data">Import data</string>
     <string name="settings_advanced_import_data_summary">Load data which were previously saved</string>
+    <string name="settings_advanced_user_agent">Custom user-agent</string>
+    <string name="settings_advanced_user_agent_default">Follow system WebView version</string>
+    <string name="settings_advanced_user_agent_hint">Leave empty to follow the system WebView version. When importing cookies, set this to the exact user-agent of the browser you exported them from.</string>
+    <string name="settings_advanced_import_cookies">Import cookies</string>
+    <string name="settings_advanced_import_cookies_summary">Sign in with a browser that can pass the Cloudflare check, copy its cookies, then tap here to paste</string>
+    <string name="settings_advanced_import_cookies_done">Imported %d cookies</string>
+    <string name="settings_advanced_import_cookies_empty">Clipboard is empty</string>
+    <string name="settings_advanced_import_cookies_failed">No recognizable EH cookies found</string>
     <string name="settings_advanced_import_data_successfully">Data imported</string>
     <string name="settings_advanced_backup_favorite">Backup favorite list</string>
     <string name="settings_advanced_backup_favorite_summary">Backup remote favorite list to local</string>
