@@ -70,9 +70,11 @@ import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.ui.Screen
+import com.hippo.ehviewer.ui.WebViewOutdatedNotice
 import com.hippo.ehviewer.ui.destinations.WebViewSignInScreenDestination
 import com.hippo.ehviewer.ui.openBrowser
 import com.hippo.ehviewer.ui.tools.awaitConfirmationOrCancel
+import com.hippo.ehviewer.util.WebViewSupport
 import com.hippo.ehviewer.util.displayString
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -251,6 +253,12 @@ fun AnimatedVisibilityScope.SignInScreen(navigator: DestinationsNavigator) = Scr
                             )
                         }
                     }
+                    if (WebViewSupport.isVersionOutdated) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        WebViewOutdatedNotice(
+                            modifier = Modifier.widthIn(max = dimensionResource(id = com.hippo.ehviewer.R.dimen.single_max_width)).padding(top = 12.dp),
+                        )
+                    }
                 }
             }
             else -> {
@@ -337,6 +345,12 @@ fun AnimatedVisibilityScope.SignInScreen(navigator: DestinationsNavigator) = Scr
                                 )
                             }
                         }
+                    }
+                    if (WebViewSupport.isVersionOutdated) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        WebViewOutdatedNotice(
+                            modifier = Modifier.widthIn(max = 360.dp).padding(horizontal = 4.dp),
+                        )
                     }
                 }
             }

@@ -45,6 +45,11 @@
     <string name="webview_unavailable_message">Sign-in, Cloudflare verification and some settings pages rely on the system WebView provided by your device (Android System WebView, Chrome or an equivalent). No usable WebView was detected, so those pages are disabled. Install or enable one in your system settings and restart EHViewer, or open the page in an external browser below.</string>
     <string name="webview_unavailable_open_in_browser">Open in browser</string>
     <string name="settings_about_webview">System WebView</string>
+    <string name="webview_outdated_title">System WebView is out of date</string>
+    <string name="webview_outdated_message">Installed version: %s. Sign-in is protected by Cloudflare, which needs a reasonably modern engine (Chrome %s or newer). Older WebViews often fail the challenge or loop forever. Update Android System WebView or Chrome in your app store, then restart EHViewer.</string>
+    <string name="webview_outdated_update">Update WebView</string>
+    <string name="webview_outdated_sign_in_notice">Your system WebView (%s) is too old for the Cloudflare check. Web sign-in will likely fail — use the username and password sign-in above instead.</string>
+    <string name="settings_about_webview_outdated">Outdated — web sign-in may fail (Chrome %s or newer recommended)</string>
     <string name="settings_about_webview_unavailable">Not detected — WebView-dependent pages are disabled</string>
     <string name="sign_in_first">Please sign in first</string>
     <string name="text_is_empty">Text is empty</string>

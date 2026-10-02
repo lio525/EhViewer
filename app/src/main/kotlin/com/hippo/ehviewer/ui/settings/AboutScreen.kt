@@ -65,10 +65,11 @@ private fun author() = AnnotatedString.fromHtml(stringResource(R.string.settings
 @Stable
 private fun webViewSummary(): String {
     val detail = listOfNotNull(WebViewSupport.versionName, WebViewSupport.packageName).joinToString(" · ")
-    return if (detail.isNotEmpty() && WebViewSupport.canUseWebView) {
-        detail
-    } else {
-        stringResource(R.string.settings_about_webview_unavailable)
+    return when {
+        WebViewSupport.isVersionOutdated ->
+            "$detail\n" + stringResource(R.string.settings_about_webview_outdated, WebViewSupport.MIN_SUPPORTED_CHROME_MAJOR.toString())
+        detail.isNotEmpty() && WebViewSupport.canUseWebView -> detail
+        else -> stringResource(R.string.settings_about_webview_unavailable)
     }
 }
 

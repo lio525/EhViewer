@@ -31,6 +31,11 @@
     <string name="webview_unavailable_message">登录、Cloudflare 验证和部分设置页依赖设备提供的系统 WebView（Android System WebView 或 Chrome）。当前未检测到可用的 WebView，这些页面已停用。请在系统设置中安装或启用其中一个后重启 EHViewer，也可以用下面的按钮通过外部浏览器打开该页面。</string>
     <string name="webview_unavailable_open_in_browser">用浏览器打开</string>
     <string name="settings_about_webview">系统 WebView</string>
+    <string name="webview_outdated_title">系统 WebView 版本过低</string>
+    <string name="webview_outdated_message">当前版本：%s。登录页由 Cloudflare 保护，需要较新的内核（建议 Chrome %s 以上）。版本过旧时验证往往无法通过或无限循环。请在应用商店中更新「Android System WebView」或 Chrome，然后重启 EHViewer。</string>
+    <string name="webview_outdated_update">更新 WebView</string>
+    <string name="webview_outdated_sign_in_notice">系统 WebView（%s）版本过低，无法通过 Cloudflare 验证，网页登录多半会失败，建议改用上面的账号密码登录。</string>
+    <string name="settings_about_webview_outdated">版本过低，网页登录可能失败（建议 Chrome %s 以上）</string>
     <string name="settings_about_webview_unavailable">未检测到，相关页面已停用</string>
     <string name="sign_in_first">请先登录</string>
     <string name="text_is_empty">文本为空</string>
